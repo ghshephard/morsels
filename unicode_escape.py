@@ -3,18 +3,18 @@ import sys
 
 
 def parse_file(fp, style):
-    line: str = ''
-    for c in fp.readline():
+    out = ''
+    for c in fp.read():
         if ord(c) <= 127:
-            ch: str = c
+            ch = c
         elif style == 'html':
-            ch: str = f'&#x{ord(c):x}'
+            ch = f'&#x{ord(c):x};'
         elif ord(c) < 65535:              
-            ch: str = f'\\u{ord(c):04x}'
+            ch = f'\\u{ord(c):04x}'
         else:
-            ch: str = f'\\U{ord(c):08x}'
-        line += ch
-    print(line)
+            ch = f'\\U{ord(c):08x}'
+        out += ch
+    print(out, end="")
 
 
 if __name__ == "__main__":
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     else:  
         fp = open(fn, 'r', encoding='utf-8')
 
-    parse_file(fp,args.style)
+    parse_file(fp, args.style)
