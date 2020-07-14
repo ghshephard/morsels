@@ -3,8 +3,7 @@ def uniques_only(incoming):
     for i in incoming:
         if i not in chkset:
             yield i
-        else:
-            chkset.add(i)
+    chkset.add(i)
 
 
 if __name__ == "__main__":
