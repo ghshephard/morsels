@@ -11,7 +11,7 @@ if __name__ == "__main__":
     squares = (n**2 for n in nums)
     chklst = [
         [1, 2, 2, 1, 1, 3, 2, 1],
-        [squares]
+        squares
         ]
     for chk in chklst:
         print(list(uniques_only(chk)))
