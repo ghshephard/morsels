@@ -4,27 +4,35 @@ import datetime
 @total_ordering
 
 class Month:
+    __slots__ = ['year','month', 'first_day', 'last_day']
+
     def __init__(self,year,month):
-        self._dt=(year,month)
-        self.first_day = datetime.date(self.year, self.month, 1)
+        super().__setattr__("year", year)
+        super().__setattr__("month", month)
+        super().__setattr__("first_day", datetime.date(self.year, self.month, 1))
         weeks, days = monthrange(year, month)
-        self.last_day = datetime.date(self.year, self.month, days)
+        super().__setattr__("last_day", datetime.date(self.year, self.month, days))
+    # @property
+    # def year(self):
+    #     year, month = self._dt
+    #     return year
 
-    @property
-    def year(self):
-        year, month = self._dt
-        return year
+    # @property
+    # def month(self):
+    #     year, month = self._dt
+    #     return month
 
-    @property
-    def month(self):
-        year, month = self._dt
-        return month
+    def __delattr__(self, name: str) -> None:
+        raise AttributeError(f"{type(self).__name__} cannot delete {name}")
 
+    def __setattr__(self, name, value):
+        raise AttributeError(f'{type(self).__name__} cannot modify {name}.')
     def __key(self):
-        return (self.year, self.month)
+        return ((self.year, self.month))
 
     def __hash__(self):
-        return hash(self.__key)
+
+        return hash(self.__key())
         
     def _is_valid_operand(self, other):
         if not hasattr(other,"year") or not hasattr(other,"month"):
@@ -55,9 +63,9 @@ class Month:
     def strftime(self, format):
         return datetime.datetime.strftime(datetime.datetime(self.year, self.month, 1),format)
 
-
 if __name__ == "__main__":
     dec99 = Month(1999, 12)
+    print(hash(dec99))
     jan01=Month(2001,1)
     print(dec99)
     print(jan01)
@@ -72,6 +80,8 @@ if __name__ == "__main__":
         print(m1 < t1)
     except TypeError:
         print(f"Success - TypeError on {m1} < {t1}")
+    else:
+        print(f"ERROR - No Zero Division on {m1} < {t1}")
     dec99 = Month(1999, 12)
     print(f'First day of {dec99} is {dec99.first_day}')
     print(f'Last day of {dec99} is {dec99.last_day}')
@@ -83,6 +93,8 @@ if __name__ == "__main__":
         dec99.year = 1998
     except AttributeError:
         print("Success - got an Attribute Error when trying to change dec99.year")
+    else:
+        print("FAILURE - Did not get attribute Error when trying to change {dec99.year}")
     dic = {Month(1999, 12), dec99, Month(2000, 1)}
     print(f'Created Dic: {dic}')
     
