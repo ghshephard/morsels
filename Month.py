@@ -5,12 +5,27 @@ import datetime
 
 class Month:
     def __init__(self,year,month):
-        self.year = year
-        self.month = month
+        self._dt=(year,month)
         self.first_day = datetime.date(self.year, self.month, 1)
         weeks, days = monthrange(year, month)
         self.last_day = datetime.date(self.year, self.month, days)
 
+    @property
+    def year(self):
+        year, month = self._dt
+        return year
+
+    @property
+    def month(self):
+        year, month = self._dt
+        return month
+
+    def __key(self):
+        return (self.year, self.month)
+
+    def __hash__(self):
+        return hash(self.__key)
+        
     def _is_valid_operand(self, other):
         if not hasattr(other,"year") or not hasattr(other,"month"):
             return False
@@ -31,10 +46,14 @@ class Month:
 
     def __str__(self):
         return(f'{self.year:04}-{self.month:02}')
+
     @classmethod
     def from_date(self,dt):
         year, month, day, *_ = datetime.date.timetuple(dt)
         return Month(year, month)
+
+    def strftime(self, format):
+        return datetime.datetime.strftime(datetime.datetime(self.year, self.month, 1),format)
 
 
 if __name__ == "__main__":
@@ -59,6 +78,11 @@ if __name__ == "__main__":
     nye99 = datetime.date(1999, 12, 31)
     dec99 = Month.from_date(nye99)
     print(f"Month from {nye99} is {dec99}")
-
-
+    print(f"strftime of {dec99} is {dec99.strftime('%b %Y')}")
+    try: 
+        dec99.year = 1998
+    except AttributeError:
+        print("Success - got an Attribute Error when trying to change dec99.year")
+    dic = {Month(1999, 12), dec99, Month(2000, 1)}
+    print(f'Created Dic: {dic}')
     
