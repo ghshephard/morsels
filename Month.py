@@ -1,10 +1,16 @@
 from functools import total_ordering
+from calendar import monthrange
+import datetime
 @total_ordering
 
 class Month:
     def __init__(self,year,month):
-        self.month = month
         self.year = year
+        self.month = month
+        self.first_day = datetime.date(self.year, self.month, 1)
+        weeks, days = monthrange(year, month)
+        self.last_day = datetime.date(self.year, self.month, days)
+
     def _is_valid_operand(self, other):
         if not hasattr(other,"year") or not hasattr(other,"month"):
             return False
@@ -25,6 +31,11 @@ class Month:
 
     def __str__(self):
         return(f'{self.year:04}-{self.month:02}')
+    @classmethod
+    def from_date(self,dt):
+        year, month, day, *_ = datetime.date.timetuple(dt)
+        return Month(year, month)
+
 
 if __name__ == "__main__":
     dec99 = Month(1999, 12)
@@ -42,4 +53,12 @@ if __name__ == "__main__":
         print(m1 < t1)
     except TypeError:
         print(f"Success - TypeError on {m1} < {t1}")
+    dec99 = Month(1999, 12)
+    print(f'First day of {dec99} is {dec99.first_day}')
+    print(f'Last day of {dec99} is {dec99.last_day}')
+    nye99 = datetime.date(1999, 12, 31)
+    dec99 = Month.from_date(nye99)
+    print(f"Month from {nye99} is {dec99}")
+
+
     
