@@ -1,5 +1,5 @@
 
-class EasyDict(dict):
+class EasyDict:
     def _norm(self, k):
         if self.normalize:
             return k.replace(" ","_")
