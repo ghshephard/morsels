@@ -25,16 +25,11 @@ class EasyDict:
         return str(self.__dict__)
 
     def __eq__(self, other):
-        if self.__dict__ == other.__dict__:
-            return True
-        else:
-            return False
-
+        return self.__dict__ == other.__dict__
+      
     def __ne__(self, other):
-        if self.__dict__ != other.__dict__:
-            return True
-        else:
-            return False
+        return self.__dict__ != other.__dict__:
+      
     def get(self, key, default = None):
         return self.__dict__.get(self._norm(key),default)
         
