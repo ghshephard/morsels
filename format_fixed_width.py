@@ -1,5 +1,5 @@
 from collections import defaultdict
-def format_fixed_width(rows, padding = 2, widths=None, alignments=None):
+def format_fixed_width_v1(rows, padding = 2, widths=None, alignments=None):
 
     align = {}
     maxleng=defaultdict(int)
@@ -29,10 +29,30 @@ def format_fixed_width(rows, padding = 2, widths=None, alignments=None):
         ret =  ret.rstrip() + "\n"
     return ret.rstrip()   
 
+
+def format_fixed_width(rows,widths=None,padding=2, alignments=None):
+
+    
+    if not widths:
+        widths = [ max(len(cell) for cell in row) for row in zip(*rows)]
+    if alignments:
+         aligns = [ str.ljust if a=="L" else str.rjust for a in alignments ]
+    else: 
+        aligns = [ str.ljust for _ in range(len(widths))]
+    ret=""
+    for row in rows:
+        for cell,clen,align in zip(row,widths,aligns):
+            ret+=align(cell, clen)+padding*" "
+        ret = ret.rstrip() + "\n"
+    return ret.rstrip()
+
+
 if __name__ == "__main__":
     print(format_fixed_width([['green', 'red'], ['blue', 'purple']]))
     print(format_fixed_width([["Hello"]]))
     print(format_fixed_width([["hi", "there"]]))
     print(format_fixed_width([["Jane"],["Mark"]]))
     rows = [["Jane", "", "Austen"], ["Samuel", "Langhorne", "Clemens"]]
+    print(format_fixed_width(rows,widths=[10,15,20]))
+
     print(format_fixed_width(rows, alignments=['R', 'L', 'R']))
