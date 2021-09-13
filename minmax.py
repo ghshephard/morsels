@@ -1,5 +1,5 @@
 import collections
-def minmax(values, *, key=None):
+def minmax_v1(values, *, key=None):
     if not values:
         raise ValueError("Empty List")
     if not key:
@@ -8,6 +8,32 @@ def minmax(values, *, key=None):
         values=list(values)
     mm = collections.namedtuple("mm", "min max")
     return mm(min(values, key=key), max=max(values, key=key))
+
+
+from typing import NamedTuple, Any 
+
+class MM(NamedTuple):
+    min: Any
+    max: Any
+
+    def __iter__(self):
+        yield self.min
+        yield self.max
+
+def minmax(values, *, key=lambda x:x):
+
+    iterv = iter(values)
+    try:
+        i = next(iterv)
+        min_item, max_item, min_i, max_i = key(i), key(i), i, i
+    except StopIteration:
+        raise ValueError("Empty List.")
+    for i in iterv:
+        if key(i) < min_item:
+            min_item, min_i = key(i), i
+        if key(i) > max_item:
+            max_item, max_i = key(i), i
+    return MM(min_i, max_i)
 
 
 if __name__ == "__main__":
