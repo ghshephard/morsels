@@ -20,19 +20,21 @@ class MM(NamedTuple):
         yield self.min
         yield self.max
 
-def minmax(values, *, key=lambda x:x):
+def minmax(values, *, key=None):
 
     iterv = iter(values)
     try:
         i = next(iterv)
-        min_item, max_item, min_i, max_i = key(i), key(i), i, i
+        min_item =  max_item = key(i) if key else i
+        min_i = max_i = i
     except StopIteration:
         raise ValueError("Empty List.")
     for i in iterv:
-        if key(i) < min_item:
-            min_item, min_i = key(i), i
-        if key(i) > max_item:
-            max_item, max_i = key(i), i
+        item = key(i) if key else i
+        if item < min_item:
+            min_item, min_i = item, i
+        if item > max_item:
+            max_item, max_i = item, i
     return MM(min_i, max_i)
 
 
