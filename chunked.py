@@ -1,7 +1,20 @@
+from itertools import islice
 NOTHING = object()
 def chunked(sequence, n, *, fill=NOTHING):
     iterator=iter(sequence)
-    
+    while iterator:
+        if not ( ret := list(islice(iterator, n)) ):
+            return
+        if len(ret) == n:
+            yield ret
+        else:
+            yield ret+[fill]*(n-len(ret)) if fill is not NOTHING else ret 
+        
+
+
+
+def chunked_v1(sequence, n, *, fill=NOTHING):
+    iterator=iter(sequence)
     try:
         while iterator:
             ret = []
@@ -12,6 +25,7 @@ def chunked(sequence, n, *, fill=NOTHING):
         if ret:
             yield ret+[fill]*(n-len(ret)) if fill is not NOTHING else ret 
  
+
     
 if __name__ == "__main__":
     for chunk in chunked([1,2,3,4,5],n=2):
