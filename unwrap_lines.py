@@ -1,7 +1,19 @@
 from textwrap import dedent
 import re
+
+
+NOLINEBREAK = re.compile(r'''
+   (?<!\n])        # Preserve multiple linebreaks.
+   (?<=.)[ ]?         # Must be *something* before the \n - But erase single trailling space
+   (?<![ ]{2})          # But don't split line if it ends in two spaces.
+   \n               # Good Grief - this is the actual thing we're replacing
+   (?!\n|[0-9-])    # Next line can't be a new line, or bullet/numberd list.
+   (?=.)            # And it shouldn't be the very last thing.
+''', re.VERBOSE)        
+
+
 def unwrap_lines(lines):
-    return re.sub("(?<!\n])(?<=.) ?(?<!  )\n(?!\n|[0-9-])(?=.)"," ",lines, flags=re.MULTILINE)
+   return NOLINEBREAK.sub(" ",lines)
 
 
 wrapped_text = """\
@@ -36,16 +48,7 @@ wrapped_text = dedent("""
         """).lstrip()
 
 
-wrapped_text = dedent("""
-            This is a line ends in two spaces  
-            So this line doesn't wrap into it
 
-            This line doesn't end in spaces
-            So this line does wrap into it
-
-            This line ends in 1 space 
-            So this line does wrap
-        """).lstrip()
 
 wrapped_text = text = """
 To do:
@@ -59,6 +62,15 @@ Grocery list
 - avocado butter
 - fermented chocolate
 """
+wrapped_text = dedent("""
+            This is a line ends in two spaces  
+            So this line doesn't wrap into it
 
+            This line doesn't end in spaces
+            So this line does wrap into it
 
-print(unwrap_lines(wrapped_text))
+            This line ends in 1 space 
+            So this line does wrap
+        """).lstrip()
+
+print(unwrap_lines(wrapped_text).replace(" "," "))
