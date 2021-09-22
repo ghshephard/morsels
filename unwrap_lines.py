@@ -1,7 +1,7 @@
 from textwrap import dedent
 import re
 def unwrap_lines(lines):
-    return re.sub("(?<!\n)(?<=.) ?(?<!  )\n(?!\n)(?=.)"," ",lines, flags=re.MULTILINE)
+    return re.sub("(?<!\n])(?<=.) ?(?<!  )\n(?!\n|[0-9-])(?=.)"," ",lines, flags=re.MULTILINE)
 
 
 wrapped_text = """\
@@ -46,5 +46,19 @@ wrapped_text = dedent("""
             This line ends in 1 space 
             So this line does wrap
         """).lstrip()
+
+wrapped_text = text = """
+To do:
+1. Grocery shopping
+2. Water the cat
+3. Take out the laundry
+4. Wash the television
+
+Grocery list
+- pistachio nut milk
+- avocado butter
+- fermented chocolate
+"""
+
 
 print(unwrap_lines(wrapped_text))
