@@ -1,7 +1,7 @@
 from textwrap import dedent
 import re
 def unwrap_lines(lines):
-    return re.sub("(?<!\n)(?<=.)\n(?!\n)(?=.)"," ",lines, flags=re.MULTILINE)
+    return re.sub("(?<!\n)(?<=.) ?(?<!  )\n(?!\n)(?=.)"," ",lines, flags=re.MULTILINE)
 
 
 wrapped_text = """\
@@ -33,6 +33,18 @@ wrapped_text = dedent("""
 
 
             And three before this one
+        """).lstrip()
+
+
+wrapped_text = dedent("""
+            This is a line ends in two spaces  
+            So this line doesn't wrap into it
+
+            This line doesn't end in spaces
+            So this line does wrap into it
+
+            This line ends in 1 space 
+            So this line does wrap
         """).lstrip()
 
 print(unwrap_lines(wrapped_text))
