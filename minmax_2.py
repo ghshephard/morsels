@@ -1,10 +1,16 @@
 ISMISSING=object()
+from collections import namedtuple
 
-def minmax(lst, *, default = ISMISSING, key = lambda x:x ):
+
+def minmax(iterable, *, default = ISMISSING, key = lambda x:x ):
+    MINMAX = namedtuple("minmax","min max")
+
+    lst=list(iterable)
     if not default is ISMISSING:
-        return (min(lst, key=key, default = default), max(lst, key=key, default=default))
+        mm = MINMAX (min(lst, key=key, default = default), max(lst, key=key, default=default))
     else:
-        return (min(lst, key=key), max(lst, key=key))
+        mm = MINMAX (min(lst, key=key), max(lst, key=key))
+    return mm
 
 
 
@@ -19,3 +25,7 @@ words = ["hi", "HEY", "Hello"]
 assert minmax(words) == ('HEY', 'hi')
 assert minmax(words, key=lambda s: s.lower()) == ("Hello","hi")
 assert minmax(words, key=len) == ("hi","Hello")
+
+numbers = {8, 7, 5, 3, 9, 6, 2}
+assert minmax(numbers) == (2,9)
+assert minmax(n**2 for n in numbers) == (4,81)
