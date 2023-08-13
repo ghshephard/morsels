@@ -2,7 +2,21 @@
 import gzip
 from dataclasses import dataclass
 from collections import defaultdict
+from datetime import datetime
+import re
 
+
+
+def get_user_logins(filename):
+    """ Pull out user logins"""
+    names=set()
+    with gzip.open(filename,'rt') as infile:
+        for line in infile:
+            if "session opened for user" in line:
+                name=line.split()[10]
+                if not name in names:
+                    names.add(name)
+                    yield name
 
 def get_failed_logins(filename):
     """ Pull out Failed logins"""
