@@ -5,7 +5,21 @@ from collections import defaultdict
 from datetime import datetime
 import re
 
+@dataclass
+class Sessions:
+    """ represent ssh sessions"""
+    pid: int
+    user: str
+    opened: datetime
 
+def get_user_sessions(filename, year="2017"):
+    """ Pull out user sessions """
+    with gzip.open(filename,'rt') as infile:
+        for line in infile:
+            if (mtch:=re.search(r"^([^ ]+ [^ ]+ [^ ]+) [^ ]+ sshd\[([0-9]+)]: .*opened for user ([^ ]+) ",line)):
+                dstr, pid, name = mtch.groups()
+                dt=datetime.strptime(year+dstr, "%Y%b %d %H:%M:%S")
+                yield Sessions(int(pid), name, dt)
 
 def get_user_logins(filename):
     """ Pull out user logins"""
