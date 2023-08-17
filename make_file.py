@@ -2,11 +2,12 @@ import tempfile
 import os
 
 class make_file:
-    def __init__(self,contents):
+    def __init__(self,contents="", directory=None):
         self.contents=contents
+        self.dir=directory
 
     def __enter__(self):
-        fp = open(tempfile.NamedTemporaryFile().name,'wt')
+        fp = open(tempfile.NamedTemporaryFile(dir=self.dir).name,'wt')
         fp.write(self.contents)   
         self.nam = fp.name    
         fp.close()
@@ -25,6 +26,9 @@ def main():
         print(open(filename).read())
         print(f'{filename} READ.')
         print("Tests all Passed.")
-
+    with make_file(contents="STUFF",directory="/home/gshephard/morsels") as myfile:
+        print("Next: ",myfile)
+        fp=open(myfile, mode="at").write('More')
+        print(open(myfile).read())
 if __name__ == "__main__":
     main()
